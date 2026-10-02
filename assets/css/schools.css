@@ -1,0 +1,120 @@
+/* SansBorder — Schools ("Nine worlds turn around you"). Modernist tokens: ink #201e1d, paper #f3f2f2, red #ec3013, square corners. */
+:root {
+  --ink: #201e1d;
+  --paper: #f3f2f2;
+  --red: #ec3013;
+  --red-hover: #dd2b0f;
+  --red-deep: #ae1800;
+  --red-soft: #ff9783;
+  --gutter: clamp(20px, 4vw, 48px);
+  --gutter-b: clamp(20px, 3vw, 36px);
+}
+
+html, body { margin: 0; background: var(--ink); }
+*, *::before, *::after { box-sizing: border-box; }
+a { color: var(--red-deep); text-underline-offset: 3px; }
+a:hover { color: var(--red); }
+a:focus-visible, button:focus-visible { outline: 2px solid var(--red); outline-offset: 3px; }
+::selection { background: rgba(236, 48, 19, .35); }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+
+.page {
+  background: var(--ink); color: var(--paper);
+  font-family: 'Archivo', system-ui, sans-serif; font-size: 15px; line-height: 1.55;
+  min-height: 100vh;
+}
+.label { font-size: 11px; font-weight: 700; letter-spacing: .12em; }
+
+.skip { position: absolute; left: -9999px; top: 8px; padding: 10px 14px; background: var(--paper); color: var(--ink); z-index: 20; }
+.skip:focus { left: 8px; }
+
+/* ── Universe: the dial, caption and open world. Desktop positions are set from script (geometry depends on the ring). */
+.universe { position: relative; min-height: 100vh; }
+.universe.narrow { min-height: auto; }
+
+.dial { position: absolute; inset: 0; height: 100%; touch-action: pan-y; cursor: grab; }
+.dial:active { cursor: grabbing; }
+.narrow .dial { position: relative; }
+.dial canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+.dial-nodes { position: absolute; inset: 0; pointer-events: none; }
+.dial-nodes button {
+  position: absolute; left: 0; top: 0; width: 36px; height: 36px; margin: -18px 0 0 -18px; padding: 0;
+  border: 0; background: transparent; cursor: pointer; pointer-events: auto;
+}
+
+.top {
+  position: absolute; top: 0; left: 0; right: 0; z-index: 3; pointer-events: none;
+  display: flex; align-items: center; flex-wrap: wrap; gap: 12px 28px; padding: 18px var(--gutter);
+}
+.brand { display: flex; align-items: center; gap: 10px; color: var(--paper); text-decoration: none; margin-inline-end: auto; pointer-events: auto; }
+.brand:hover { color: var(--paper); }
+.brand-word { font-size: 19px; letter-spacing: -.02em; line-height: 1; font-weight: 400; }
+.brand-word b { font-weight: 800; }
+.primary { display: flex; flex-wrap: nowrap; gap: clamp(14px, 2vw, 24px); white-space: nowrap; pointer-events: auto; }
+.primary a { color: var(--paper); text-decoration: none; font-size: 14px; font-weight: 500; }
+.primary a:hover, .primary a[aria-current="page"] { color: var(--red-soft); }
+.primary a[aria-current="page"] { font-weight: 700; }
+
+.caption {
+  position: absolute; left: var(--gutter); bottom: var(--gutter-b); z-index: 2;
+  display: flex; flex-direction: column; gap: 10px; max-width: 360px; pointer-events: none;
+}
+.narrow .caption { position: relative; left: auto; bottom: auto; padding: 0 0 20px 0; margin-left: var(--gutter); }
+.caption h1 { margin: 0; font-size: clamp(28px, 2.8vw, 40px); font-weight: 800; line-height: 1.02; letter-spacing: -.035em; }
+.caption p { margin: 0; font-size: 14px; line-height: 1.5; color: rgba(243, 242, 242, .75); text-wrap: pretty; }
+
+/* ── The open world */
+.world {
+  position: absolute; top: 84px; right: var(--gutter); bottom: var(--gutter-b); z-index: 2;
+  background: var(--paper); color: var(--ink); display: flex; flex-direction: column; overflow: hidden;
+}
+.narrow .world { position: relative; inset: auto; margin: 0 var(--gutter) 24px; }
+.world-art { position: relative; flex: 1 1 0px; min-height: 150px; border-bottom: 2px solid rgba(32, 30, 29, .4); }
+.narrow .world-art { flex: none; height: 240px; }
+.world-art canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+.world-count { position: absolute; top: 14px; left: 18px; font-size: 11px; font-weight: 700; letter-spacing: .12em; color: var(--red-deep); }
+.world-drawn { position: absolute; bottom: 10px; left: 18px; right: 18px; font-size: 12px; color: rgba(32, 30, 29, .68); }
+
+/* On short desktop screens the body scrolls inside the panel rather than squeezing the drawing away. */
+.world-body { flex: 0 1 auto; min-height: 0; overflow-y: auto; container-type: inline-size; display: flex; flex-direction: column; gap: 14px; padding: clamp(18px, 2.2vw, 28px); }
+.narrow .world-body { overflow: visible; }
+/* Capped by panel width so the longest name ("Communication") never clips. */
+.world-body h2 { margin: 0; font-size: min(clamp(30px, 3.4vw, 54px), 11cqi); overflow-wrap: break-word; font-weight: 800; line-height: 1; letter-spacing: -.035em; text-wrap: balance; }
+.world-body h2:focus { outline: none; }
+.world-desc { margin: 0; max-width: 46ch; font-size: 16px; line-height: 1.45; color: rgba(32, 30, 29, .82); text-wrap: pretty; }
+.world-topics { display: flex; flex-wrap: wrap; gap: 6px; }
+.world-topics span { flex: none; white-space: nowrap; font-size: 12px; padding: 3px 10px; border: 1px solid rgba(32, 30, 29, .4); }
+
+.world-rel { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px; border-top: 1px solid rgba(32, 30, 29, .4); padding-top: 12px; }
+.world-rel .label { color: rgba(32, 30, 29, .68); margin-inline-end: 4px; }
+.world-rel-list { display: contents; }
+.world-rel button {
+  display: flex; align-items: center; gap: 6px; padding: 4px 10px; border: 1px solid var(--ink);
+  background: transparent; color: var(--ink); font: inherit; font-size: 13px; font-weight: 700; cursor: pointer; white-space: nowrap;
+}
+.world-rel button span { color: var(--red-deep); }
+.world-rel button:hover { background: var(--ink); color: var(--paper); }
+
+.world-actions { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; }
+.enter {
+  display: flex; align-items: center; justify-content: space-between; gap: 32px; min-width: 240px; padding: 14px 16px;
+  background: var(--red); color: var(--paper); font-weight: 800; font-size: 15px; text-decoration: none;
+}
+.enter:hover { background: var(--red-hover); color: var(--paper); }
+.enter:active { background: var(--red-deep); }
+.stepper { display: flex; gap: 2px; }
+.stepper button {
+  width: 44px; height: 44px; border: 1px solid rgba(32, 30, 29, .4); background: transparent; color: var(--ink);
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+}
+.stepper button:hover { background: rgba(32, 30, 29, .07); }
+
+/* ── Every School, by number */
+.every {
+  border-top: 2px solid rgba(243, 242, 242, .25); padding: 22px var(--gutter);
+  display: flex; flex-wrap: wrap; gap: 8px 22px; align-items: baseline;
+}
+.every .label { color: rgba(243, 242, 242, .6); }
+.every a { display: flex; gap: 6px; align-items: baseline; font-size: 14px; font-weight: 600; color: var(--paper); text-decoration: none; white-space: nowrap; }
+.every a[aria-current="true"], .every a:hover { color: var(--red-soft); }
+.every a b { font-weight: 800; color: var(--red-soft); }
